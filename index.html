@@ -1,40 +1,47 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="css/main.css">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>debarkak</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/main.css">
 </head>
 <body>
-    <div class="container">
-        <div class="profile">
-            <img src="assets/pfp.png" alt="pfp">
-            <h1>hello there👋</h1>
-            <hr>
-            <h3>about me</h3>
-            <p>
-                » name: <b>Debarka Kundu</b> « <br>
-                » username: <b>debarkak</b> « <br>
-                » country: <b>India</b> « <br>
-              </p>
-              <hr>
-        </div>
-        <div class="links">
-            <a href="https://x.com/debarkak" target="_blank">
-                <img src="assets/x.png" alt="x">
-            </a>
-            <a href="https://github.com/debarkak" target="_blank">
-                <img src="assets/github.png" alt="github">
-            </a>
-            <a href="mailto:debarkak@murena.io" target="_blank">
-                <img src="assets/email.png" alt="email">
-            </a>
-            <a href="https://youtube.com/@debarkak" target="_blank">
-                <img src="assets/youtube.png" alt="youtube">
-            </a>
-        </div>
+  <div class="container">
+    <div class="text">
+      <h1 class="fade-in" style="--delay:0s">hello world</h1>
+      <p class="fade-in" style="--delay:0.1s">hello there, my name is Debarka Kundu from West Bengal, India. i am just a person who is still learning lots of things, i sometimes (or most times, i don't know) develop things, average type i know, anyways this is just my website. check out my social media on right side or my notion blog :)</p>
     </div>
-    <script src="js/links.js"></script>
-    <script src="js/main.js"></script>
+
+    <div class="profile fade-in" style="--delay:0.2s">
+      <!-- github profile picture -->
+      <img src="https://github.com/debarkak.png" alt="profile picture" class="pfp" id="pfp">
+
+      <div class="socials fade-in" style="--delay:0.3s">
+        <a href="https://www.linkedin.com/in/debarkak" target="_blank" aria-label="linkedin">
+          <img src="assets/linkedin.png" alt="linkedin logo">
+        </a>
+        <a href="https://github.com/debarkak" target="_blank" aria-label="github">
+          <img src="assets/github.png" alt="github logo">
+        </a>
+        <a href="mailto:debarkak@muena.io" aria-label="email">
+          <img src="assets/email.png" alt="email logo">
+        </a>
+        <a href="https://www.youtube.com/@debarkak" target="_blank" aria-label="youtube">
+          <img src="assets/youtube.png" alt="youtube logo">
+        </a>
+        <a href="https://www.instagram.com/debarkak" target="_blank" aria-label="instagram">
+          <img src="assets/instagram.png" alt="instagram logo">
+        </a>
+      </div>
+
+      <a class="notion fade-in" style="--delay:0.4s" href="https://bit.ly/debarkak-notion" target="_blank">
+        check out my notion blog!
+      </a>
+    </div>
+  </div>
+
+  <script src="js/main.js"></script>
 </body>
 </html>
