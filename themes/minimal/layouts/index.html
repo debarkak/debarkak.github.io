@@ -1,0 +1,27 @@
+{{ define "main" }}
+<p class="tagline">{{ .Site.Params.description }}</p>
+{{ $posts := where .Site.RegularPages "Section" "blog" }}
+{{ $posts = $posts.ByDate.Reverse }}
+{{ if $posts }}
+<input type="text" id="search" class="search-input" placeholder="search posts..." aria-label="search posts">
+{{ end }}
+<div id="post-list">
+{{ range $posts }}
+<div class="post-entry" data-search="{{ .Title | lower }} {{ .Description | lower }}">
+  <a href="{{ .Permalink }}">{{ .Title }}</a>
+  <p class="post-meta">{{ .Date.Format "Jan 2, 2006" }} — {{ .Description }}</p>
+</div>
+{{ end }}
+</div>
+{{ if not $posts }}
+<p class="info-msg">no posts yet.</p>
+{{ end }}
+<script>
+document.getElementById('search')?.addEventListener('input', function(e) {
+  var q = e.target.value.toLowerCase();
+  document.querySelectorAll('.post-entry').forEach(function(el) {
+    el.style.display = el.dataset.search.includes(q) ? '' : 'none';
+  });
+});
+</script>
+{{ end }}

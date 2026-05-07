@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>post · debarka</title>
+  <meta name="description" content="blog post">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono&family=Lora:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" media="(prefers-color-scheme: dark)" href="css/dark.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/base16/solarized-light.min.css">
+  <link rel="stylesheet" media="(prefers-color-scheme: dark)" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/base16/solarized-dark.min.css">
+  <script src="posts.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+</head>
+<body>
+  <header>
+    <nav>
+      <a href="index.html" class="site-name">debarka</a>
+      <div class="nav-links">
+        <a href="index.html">blog</a>
+        <a href="about.html">about</a>
+        <button class="font-toggle" onclick="document.body.classList.toggle('font-serif');this.textContent=document.body.classList.contains('font-serif')?'mono':'serif'" aria-label="toggle font">serif</button>
+      </div>
+    </nav>
+  </header>
+  <main>
+    <a href="index.html" class="back-link">← back</a>
+    <article id="post-content">
+      <p class="info-msg">loading...</p>
+    </article>
+  </main>
+  <footer>
+    <p>
+      <a href="https://github.com/debarkak/">github</a> ·
+      <a href="https://www.instagram.com/debarkak/">instagram</a> ·
+      <a href="https://www.youtube.com/@debarkak">youtube</a> ·
+      <a href="http://debarkak.is-not.cool/">website</a> ·
+      <a href="mailto:debarkak@murena.io">mail</a> ·
+      <a href="mailto:debarkak@softmodd.ing">chat</a>
+    </p>
+    <p>© <script>document.write(new Date().getFullYear())</script> debarka · <a href="https://opensource.org/licenses/MIT">mit license</a></p>
+  </footer>
+  <script>
+    function parseFrontmatter(rawMarkdown) {
+      var result = { title: '', date: '', description: '', body: rawMarkdown };
+      if (!rawMarkdown.startsWith('---')) return result;
+      var end = rawMarkdown.indexOf('---', 3);
+      if (end === -1) return result;
+      var frontmatter = rawMarkdown.substring(3, end).trim();
+      result.body = rawMarkdown.substring(end + 3).trim();
+      frontmatter.split('\n').forEach(function(line) {
+        var colon = line.indexOf(':');
+        if (colon === -1) return;
+        var key = line.substring(0, colon).trim();
+        var value = line.substring(colon + 1).trim();
+        value = value.replace(/^["']|["']$/g, '');
+        if (key === 'title') result.title = value;
+        else if (key === 'date') result.date = value;
+        else if (key === 'description') result.description = value;
+      });
+      return result;
+    }
+
+    function formatDate(dateStr) {
+      var d = new Date(dateStr + 'T00:00:00');
+      var months = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'];
+      return months[d.getMonth()] + ' ' + d.getDate() + ', ' + d.getFullYear();
+    }
+
+    async function loadPost() {
+      var params = new URLSearchParams(window.location.search);
+      var slug = params.get('p');
+      var contentEl = document.getElementById('post-content');
+
+      if (!slug) {
+        contentEl.innerHTML = '<p class="info-msg">post not found.</p>';
+        return;
+      }
+
+      var post = POSTS.find(function(p) { return p.slug === slug; });
+      if (!post) {
+        contentEl.innerHTML = '<p class="info-msg">post not found.</p>';
+        return;
+      }
+
+      try {
+        var response = await fetch(post.file);
+        if (!response.ok) throw new Error('failed to fetch');
+        var text = await response.text();
+        var meta = parseFrontmatter(text);
+
+        document.title = (meta.title || slug) + ' · debarka';
+
+        marked.use({
+          renderer: {
+            image: function(href, title, text) {
+              if (typeof href === 'object') {
+                text = href.text;
+                title = href.title;
+                href = href.href;
+              }
+              var caption = text ? '<figcaption>' + text + '</figcaption>' : '';
+              var titleAttr = title ? ' title="' + title + '"' : '';
+              return '<figure><img src="' + href + '" alt="' + text + '"' + titleAttr + '>' + caption + '</figure>';
+            }
+          }
+        });
+
+        contentEl.innerHTML =
+          '<h1>' + (meta.title || slug) + '</h1>' +
+          '<p class="post-date">' + formatDate(meta.date || post.date) + '</p>' +
+          marked.parse(meta.body);
+
+        hljs.highlightAll();
+      } catch (e) {
+        contentEl.innerHTML = '<p class="info-msg">could not load post. try using firefox or a local server.</p>';
+      }
+    }
+
+    loadPost();
+  </script>
+</body>
+</html>

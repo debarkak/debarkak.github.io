@@ -1,0 +1,9 @@
+{{ define "main" }}
+{{ $posts := .Pages.ByDate.Reverse }}
+{{ range $posts }}
+<div class="post-entry">
+  <a href="{{ .Permalink }}">{{ .Title }}</a>
+  <p class="post-meta">{{ .Date.Format "Jan 2, 2006" }} — {{ .Description }}</p>
+</div>
+{{ end }}
+{{ end }}

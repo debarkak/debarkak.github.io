@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ if .IsHome }}debarka{{ else }}{{ .Title | lower }} · debarka{{ end }}</title>
+  <meta name="description" content="{{ with .Description }}{{ . }}{{ else }}{{ .Site.Params.description }}{{ end }}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono&family=Lora:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ relURL "css/main.css" }}">
+  <link rel="stylesheet" media="(prefers-color-scheme: dark)" href="{{ relURL "css/dark.css" }}">
+  <link rel="alternate" type="application/rss+xml" title="debarka" href="{{ relURL "blog.xml" }}">
+  {{ if eq .Section "blog" }}{{ if .IsPage }}
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/base16/solarized-light.min.css">
+  <link rel="stylesheet" media="(prefers-color-scheme: dark)" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/base16/solarized-dark.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  {{ end }}{{ end }}
+</head>
+<body>
+  <header>
+    <nav>
+      <a href="{{ relURL "/" }}" class="site-name">debarka</a>
+      <div class="nav-links">
+        <a href="{{ relURL "blog/" }}">blog</a>
+        <a href="{{ relURL "about/" }}">about</a>
+        <button class="font-toggle" onclick="document.body.classList.toggle('font-serif');this.textContent=document.body.classList.contains('font-serif')?'mono':'serif'" aria-label="toggle font">serif</button>
+      </div>
+    </nav>
+  </header>
+  <main>
+    {{ block "main" . }}{{ end }}
+  </main>
+  <footer>
+    <p>
+      <a href="https://github.com/debarkak/">github</a> ·
+      <a href="https://www.instagram.com/debarkak/">instagram</a> ·
+      <a href="https://www.youtube.com/@debarkak">youtube</a> ·
+      <a href="http://debarkak.is-not.cool/">website</a> ·
+      <a href="mailto:debarkak@murena.io">mail</a> ·
+      <a href="mailto:debarkak@softmodd.ing">chat</a>
+    </p>
+    <p>© {{ now.Year }} debarka · <a href="https://opensource.org/licenses/MIT">mit license</a></p>
+  </footer>
+  {{ if eq .Section "blog" }}{{ if .IsPage }}
+  <script>hljs.highlightAll();</script>
+  {{ end }}{{ end }}
+</body>
+</html>

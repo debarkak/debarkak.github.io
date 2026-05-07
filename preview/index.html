@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>debarka</title>
+  <meta name="description" content="student, tinkerer, developer. notes from the terminal about android modding, linux, self-hosting, retro computing, and local ai.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono&family=Lora:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" media="(prefers-color-scheme: dark)" href="css/dark.css">
+  <script src="posts.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+</head>
+<body>
+  <header>
+    <nav>
+      <a href="index.html" class="site-name">debarka</a>
+      <div class="nav-links">
+        <a href="index.html">blog</a>
+        <a href="about.html">about</a>
+        <button class="font-toggle" onclick="document.body.classList.toggle('font-serif');this.textContent=document.body.classList.contains('font-serif')?'mono':'serif'" aria-label="toggle font">serif</button>
+      </div>
+    </nav>
+  </header>
+  <main>
+    <p class="tagline">student, tinkerer, developer. notes from the terminal.</p>
+    <input type="text" id="search" class="search-input" placeholder="search posts..." aria-label="search posts" style="display:none">
+    <div id="post-list"></div>
+    <div id="error-message" style="display:none;">
+      <p class="info-msg">could not load posts. to preview locally, either use firefox (supports local file fetches), or run a simple server:</p>
+      <pre><code>python3 -m http.server 8000</code></pre>
+      <p class="info-msg">then open <a href="http://localhost:8000/preview/">http://localhost:8000/preview/</a></p>
+    </div>
+  </main>
+  <footer>
+    <p>
+      <a href="https://github.com/debarkak/">github</a> ·
+      <a href="https://www.instagram.com/debarkak/">instagram</a> ·
+      <a href="https://www.youtube.com/@debarkak">youtube</a> ·
+      <a href="http://debarkak.is-not.cool/">website</a> ·
+      <a href="mailto:debarkak@murena.io">mail</a> ·
+      <a href="mailto:debarkak@softmodd.ing">chat</a>
+    </p>
+    <p>© <script>document.write(new Date().getFullYear())</script> debarka · <a href="https://opensource.org/licenses/MIT">mit license</a></p>
+  </footer>
+  <script>
+    function parseFrontmatter(rawMarkdown) {
+      var result = { title: '', date: '', description: '', body: rawMarkdown };
+      if (!rawMarkdown.startsWith('---')) return result;
+      var end = rawMarkdown.indexOf('---', 3);
+      if (end === -1) return result;
+      var frontmatter = rawMarkdown.substring(3, end).trim();
+      result.body = rawMarkdown.substring(end + 3).trim();
+      frontmatter.split('\n').forEach(function(line) {
+        var colon = line.indexOf(':');
+        if (colon === -1) return;
+        var key = line.substring(0, colon).trim();
+        var value = line.substring(colon + 1).trim();
+        value = value.replace(/^["']|["']$/g, '');
+        if (key === 'title') result.title = value;
+        else if (key === 'date') result.date = value;
+        else if (key === 'description') result.description = value;
+      });
+      return result;
+    }
+
+    function formatDate(dateStr) {
+      var d = new Date(dateStr + 'T00:00:00');
+      var months = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'];
+      return months[d.getMonth()] + ' ' + d.getDate() + ', ' + d.getFullYear();
+    }
+
+    async function loadPosts() {
+      var listEl = document.getElementById('post-list');
+      var errorEl = document.getElementById('error-message');
+
+      if (!POSTS || POSTS.length === 0) {
+        listEl.innerHTML = '<p class="info-msg">no posts yet.</p>';
+        return;
+      }
+
+      try {
+        var results = await Promise.all(
+          POSTS.map(function(post) {
+            return fetch(post.file).then(function(r) {
+              if (!r.ok) throw new Error('failed to fetch ' + post.file);
+              return r.text();
+            });
+          })
+        );
+        results.forEach(function(text, i) {
+          var meta = parseFrontmatter(text);
+          var entry = document.createElement('div');
+          entry.className = 'post-entry';
+          entry.dataset.search = ((meta.title || '') + ' ' + (meta.description || '')).toLowerCase();
+          var link = document.createElement('a');
+          link.href = 'post.html?p=' + POSTS[i].slug + '&v=' + new Date().getTime();
+          link.textContent = meta.title || POSTS[i].slug;
+          var p = document.createElement('p');
+          p.className = 'post-meta';
+          p.textContent = formatDate(POSTS[i].date) + ' — ' + meta.description;
+          entry.appendChild(link);
+          entry.appendChild(p);
+          listEl.appendChild(entry);
+        });
+        // show search if theres posts
+        var searchEl = document.getElementById('search');
+        if (searchEl) {
+          searchEl.style.display = '';
+          searchEl.addEventListener('input', function(e) {
+            var q = e.target.value.toLowerCase();
+            document.querySelectorAll('.post-entry').forEach(function(el) {
+              el.style.display = el.dataset.search.includes(q) ? '' : 'none';
+            });
+          });
+        }
+      } catch (e) {
+        errorEl.style.display = 'block';
+      }
+    }
+
+    loadPosts();
+  </script>
+</body>
+</html>

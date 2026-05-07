@@ -1,0 +1,7 @@
+{{ define "main" }}
+<article>
+  <h1>{{ .Title }}</h1>
+  <p class="post-date">{{ .Date.Format "Jan 2, 2006" }}</p>
+  {{ .Content }}
+</article>
+{{ end }}

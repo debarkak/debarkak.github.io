@@ -1,0 +1,28 @@
+baseURL = "https://debarkak.github.io/blog/"
+languageCode = "en-us"
+title = "Debarka"
+theme = "minimal"
+enableRobotsTXT = true
+enableEmoji = true
+
+[outputs]
+  home = ["HTML", "RSS"]
+  section = ["HTML", "RSS"]
+
+[outputFormats]
+  [outputFormats.RSS]
+    mediaType = "application/rss+xml"
+    baseName = "blog"
+
+[markup]
+  [markup.highlight]
+    codeFences = true
+    noClasses = true
+    style = "solarized-dark"
+    lineNos = false
+  [markup.goldmark.renderer]
+    unsafe = true
+
+[params]
+  description = "student, tinkerer, developer. notes from the terminal about android modding, linux, self-hosting, retro computing, and local ai."
+  author = "debarka"
