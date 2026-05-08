@@ -25,6 +25,8 @@ mkdir -p "$PREVIEW_CSS"
 # --- collect all posts ---
 declare -a ALL_SLUGS=()
 declare -a ALL_DATES=()
+declare -a ALL_TITLES=()
+declare -a ALL_DESCRIPTIONS=()
 POST_COUNT=0
 
 if [[ ! -d "$CONTENT_DIR" ]]; then
@@ -171,6 +173,8 @@ while IFS= read -r -d '' md_file; do
   # store for posts.js
   ALL_SLUGS+=("$slug")
   ALL_DATES+=("$date")
+  ALL_TITLES+=("$title")
+  ALL_DESCRIPTIONS+=("$description")
   POST_COUNT=$((POST_COUNT + 1))
 
   # sync to preview
@@ -202,7 +206,9 @@ fi
 # --- sort posts by date (newest first) and rebuild posts.js ---
 TMPFILE=$(mktemp "${SCRIPT_DIR}/.posts_sort_XXXXXX")
 for i in "${!ALL_SLUGS[@]}"; do
-  echo "${ALL_DATES[$i]}|${ALL_SLUGS[$i]}" >> "$TMPFILE"
+  t_b64=$(echo -n "${ALL_TITLES[$i]}" | base64 -w 0)
+  d_b64=$(echo -n "${ALL_DESCRIPTIONS[$i]}" | base64 -w 0)
+  echo "${ALL_DATES[$i]}|${ALL_SLUGS[$i]}|$t_b64|$d_b64" >> "$TMPFILE"
 done
 
 SORTED=$(sort -r -t'|' -k1 "$TMPFILE")
@@ -210,12 +216,16 @@ rm -f "$TMPFILE"
 
 {
   echo "const POSTS = ["
-  while IFS='|' read -r pdate pslug; do
+  while IFS='|' read -r pdate pslug t_b64 d_b64; do
     [[ -z "$pdate" ]] && continue
+    ptitle=$(echo -n "$t_b64" | base64 -d)
+    pdesc=$(echo -n "$d_b64" | base64 -d)
     echo "  {"
     echo "    slug: \"${pslug}\","
     echo "    file: \"posts/${pslug}.md\","
     echo "    date: \"${pdate}\","
+    echo "    title: \"${ptitle//\"/\\\"}\","
+    echo "    description: \"${pdesc//\"/\\\"}\","
     echo "  },"
   done <<< "$SORTED"
   echo "];"
@@ -241,6 +251,9 @@ for preview_file in "$PREVIEW_POSTS"/*.md; do
     echo "  removed orphan: ${preview_slug}.md"
   fi
 done
+
+# ensure .nojekyll exists so github pages doesn't break markdown files
+touch "$SCRIPT_DIR/.nojekyll"
 
 echo "  done. ${POST_COUNT} post(s) finalized."
 echo ""

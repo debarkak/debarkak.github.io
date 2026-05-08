@@ -82,25 +82,16 @@
       }
 
       try {
-        var results = await Promise.all(
-          POSTS.map(function(post) {
-            return fetch(post.file).then(function(r) {
-              if (!r.ok) throw new Error('failed to fetch ' + post.file);
-              return r.text();
-            });
-          })
-        );
-        results.forEach(function(text, i) {
-          var meta = parseFrontmatter(text);
+        POSTS.forEach(function(post) {
           var entry = document.createElement('div');
           entry.className = 'post-entry';
-          entry.dataset.search = ((meta.title || '') + ' ' + (meta.description || '')).toLowerCase();
+          entry.dataset.search = ((post.title || '') + ' ' + (post.description || '')).toLowerCase();
           var link = document.createElement('a');
-          link.href = 'post.html?p=' + POSTS[i].slug + '&v=' + new Date().getTime();
-          link.textContent = meta.title || POSTS[i].slug;
+          link.href = 'post.html?p=' + post.slug + '&v=' + new Date().getTime();
+          link.textContent = post.title || post.slug;
           var p = document.createElement('p');
           p.className = 'post-meta';
-          p.textContent = formatDate(POSTS[i].date) + ' — ' + meta.description;
+          p.textContent = formatDate(post.date) + ' — ' + (post.description || '');
           entry.appendChild(link);
           entry.appendChild(p);
           listEl.appendChild(entry);
