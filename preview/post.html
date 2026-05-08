@@ -12,7 +12,7 @@
   <link rel="stylesheet" media="(prefers-color-scheme: dark)" href="css/dark.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/base16/solarized-light.min.css">
   <link rel="stylesheet" media="(prefers-color-scheme: dark)" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/base16/solarized-dark.min.css">
-  <script src="posts.js"></script>
+  <script src="posts.js?v=1778227128"></script>
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
 </head>
@@ -88,11 +88,16 @@
       }
 
       try {
-        // we use post.title, post.date, and post.body directly from posts.js
+        // we use post.title, post.date, and post.body_b64 directly from posts.js?v=1778227128
         // this avoids ANY fetch requests, allowing it to work completely offline
-        // on any browser via file:// or strictly configured servers.
         
         document.title = (post.title || slug) + ' · debarka';
+
+        // UTF-8 safe base64 decoding
+        var body = '';
+        if (post.body_b64) {
+          body = decodeURIComponent(escape(atob(post.body_b64)));
+        }
 
         marked.use({
           renderer: {
@@ -112,11 +117,12 @@
         contentEl.innerHTML =
           '<h1>' + (post.title || slug) + '</h1>' +
           '<p class="post-date">' + formatDate(post.date) + '</p>' +
-          marked.parse(post.body || '');
+          marked.parse(body || '');
 
         hljs.highlightAll();
       } catch (e) {
-        contentEl.innerHTML = '<p class="info-msg">error rendering post.</p>';
+        console.error(e);
+        contentEl.innerHTML = '<p class="info-msg">error rendering post. please check console.</p>';
       }
     }
 

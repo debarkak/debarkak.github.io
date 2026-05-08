@@ -226,15 +226,14 @@ rm -f "$TMPFILE"
     [[ -z "$pdate" ]] && continue
     ptitle=$(echo -n "$t_b64" | base64 -d)
     pdesc=$(echo -n "$d_b64" | base64 -d)
-    pbody=$(echo -n "$b_b64" | base64 -d)
-    pbody_escaped=$(echo -n "$pbody" | sed 's/\\/\\\\/g; s/`/\\`/g; s/\${/\\${/g')
+    # we keep body as base64 to avoid any script injection or syntax errors
     echo "  {"
     echo "    slug: \"${pslug}\","
     echo "    file: \"posts/${pslug}.md\","
     echo "    date: \"${pdate}\","
     echo "    title: \"${ptitle//\"/\\\"}\","
     echo "    description: \"${pdesc//\"/\\\"}\","
-    echo "    body: \`${pbody_escaped}\`,"
+    echo "    body_b64: \"${b_b64}\","
     echo "  },"
   done <<< "$SORTED"
   echo "];"
@@ -263,6 +262,13 @@ done
 
 # ensure .nojekyll exists so github pages doesn't break markdown files
 touch "$SCRIPT_DIR/.nojekyll"
+
+# cache bust posts.js in html files
+TS=$(date +%s)
+sed -i "s/posts.js?v=[0-9]*/posts.js?v=$TS/g" preview/index.html preview/post.html
+# if no ?v= yet, add it
+grep -q "posts.js?v=" preview/index.html || sed -i "s/posts.js/posts.js?v=$TS/g" preview/index.html
+grep -q "posts.js?v=" preview/post.html || sed -i "s/posts.js/posts.js?v=$TS/g" preview/post.html
 
 echo "  done. ${POST_COUNT} post(s) finalized."
 echo ""

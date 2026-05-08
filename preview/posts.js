@@ -5,20 +5,6 @@ const POSTS = [
     date: "2026-05-07",
     title: "hello-there",
     description: "hello there, my name is Debarka Kundu from West Bengal, India. i am just a class9 student who is still learning lots of things, i sometimes (or most t",
-    body: `
-hello there, my name is Debarka Kundu from West Bengal, India. i am just a class9 student who is still learning lots of things, i sometimes (or most times, i don't know) develop things, average type i know, i made this website, to post some of the things i have been doing, could be random, but i just post whatever notes i write in my terminal, you can checkout the src of this website on my github to find out how i write my posts and all. all written from a terminal.
-
-if you want to reach me, just email me, prefered the softmodding one, (provided by MattKC btw, because i have membership of his channel, huge fan btw :)
-
-anyways that's about me, here are some of my links, take care, peace.
-
-## links and stuff
-
-- **github:** [github.com/debarkak](https://github.com/debarkak/)
-- **instagram:** [instagram.com/debarkak](https://www.instagram.com/debarkak/)
-- **youtube:** [youtube.com/@debarkak](https://www.youtube.com/@debarkak)
-- **main site:** [debarkak.is-not.cool](http://debarkak.is-not.cool/)
-- **email (official):** [debarkak@murena.io](mailto:debarkak@murena.io)
-- **email (for talking):** [debarkak@softmodd.ing](mailto:debarkak@softmodd.ing)`,
+    body_b64: "CmhlbGxvIHRoZXJlLCBteSBuYW1lIGlzIERlYmFya2EgS3VuZHUgZnJvbSBXZXN0IEJlbmdhbCwgSW5kaWEuIGkgYW0ganVzdCBhIGNsYXNzOSBzdHVkZW50IHdobyBpcyBzdGlsbCBsZWFybmluZyBsb3RzIG9mIHRoaW5ncywgaSBzb21ldGltZXMgKG9yIG1vc3QgdGltZXMsIGkgZG9uJ3Qga25vdykgZGV2ZWxvcCB0aGluZ3MsIGF2ZXJhZ2UgdHlwZSBpIGtub3csIGkgbWFkZSB0aGlzIHdlYnNpdGUsIHRvIHBvc3Qgc29tZSBvZiB0aGUgdGhpbmdzIGkgaGF2ZSBiZWVuIGRvaW5nLCBjb3VsZCBiZSByYW5kb20sIGJ1dCBpIGp1c3QgcG9zdCB3aGF0ZXZlciBub3RlcyBpIHdyaXRlIGluIG15IHRlcm1pbmFsLCB5b3UgY2FuIGNoZWNrb3V0IHRoZSBzcmMgb2YgdGhpcyB3ZWJzaXRlIG9uIG15IGdpdGh1YiB0byBmaW5kIG91dCBob3cgaSB3cml0ZSBteSBwb3N0cyBhbmQgYWxsLiBhbGwgd3JpdHRlbiBmcm9tIGEgdGVybWluYWwuCgppZiB5b3Ugd2FudCB0byByZWFjaCBtZSwganVzdCBlbWFpbCBtZSwgcHJlZmVyZWQgdGhlIHNvZnRtb2RkaW5nIG9uZSwgKHByb3ZpZGVkIGJ5IE1hdHRLQyBidHcsIGJlY2F1c2UgaSBoYXZlIG1lbWJlcnNoaXAgb2YgaGlzIGNoYW5uZWwsIGh1Z2UgZmFuIGJ0dyA6KQoKYW55d2F5cyB0aGF0J3MgYWJvdXQgbWUsIGhlcmUgYXJlIHNvbWUgb2YgbXkgbGlua3MsIHRha2UgY2FyZSwgcGVhY2UuCgojIyBsaW5rcyBhbmQgc3R1ZmYKCi0gKipnaXRodWI6KiogW2dpdGh1Yi5jb20vZGViYXJrYWtdKGh0dHBzOi8vZ2l0aHViLmNvbS9kZWJhcmthay8pCi0gKippbnN0YWdyYW06KiogW2luc3RhZ3JhbS5jb20vZGViYXJrYWtdKGh0dHBzOi8vd3d3Lmluc3RhZ3JhbS5jb20vZGViYXJrYWsvKQotICoqeW91dHViZToqKiBbeW91dHViZS5jb20vQGRlYmFya2FrXShodHRwczovL3d3dy55b3V0dWJlLmNvbS9AZGViYXJrYWspCi0gKiptYWluIHNpdGU6KiogW2RlYmFya2FrLmlzLW5vdC5jb29sXShodHRwOi8vZGViYXJrYWsuaXMtbm90LmNvb2wvKQotICoqZW1haWwgKG9mZmljaWFsKToqKiBbZGViYXJrYWtAbXVyZW5hLmlvXShtYWlsdG86ZGViYXJrYWtAbXVyZW5hLmlvKQotICoqZW1haWwgKGZvciB0YWxraW5nKToqKiBbZGViYXJrYWtAc29mdG1vZGQuaW5nXShtYWlsdG86ZGViYXJrYWtAc29mdG1vZGQuaW5nKQ==",
   },
 ];
