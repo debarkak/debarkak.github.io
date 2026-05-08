@@ -27,6 +27,7 @@ declare -a ALL_SLUGS=()
 declare -a ALL_DATES=()
 declare -a ALL_TITLES=()
 declare -a ALL_DESCRIPTIONS=()
+declare -a ALL_BODIES=()
 POST_COUNT=0
 
 if [[ ! -d "$CONTENT_DIR" ]]; then
@@ -170,11 +171,15 @@ while IFS= read -r -d '' md_file; do
     echo "  ✓ ${slug} — added frontmatter"
   fi
 
+  # the file is now guaranteed to have frontmatter, grab the body
+  final_body=$(cat "$md_file" | awk '/^---$/{c++;next}c>=2')
+
   # store for posts.js
   ALL_SLUGS+=("$slug")
   ALL_DATES+=("$date")
   ALL_TITLES+=("$title")
   ALL_DESCRIPTIONS+=("$description")
+  ALL_BODIES+=("$final_body")
   POST_COUNT=$((POST_COUNT + 1))
 
   # sync to preview
@@ -208,7 +213,8 @@ TMPFILE=$(mktemp "${SCRIPT_DIR}/.posts_sort_XXXXXX")
 for i in "${!ALL_SLUGS[@]}"; do
   t_b64=$(echo -n "${ALL_TITLES[$i]}" | base64 -w 0)
   d_b64=$(echo -n "${ALL_DESCRIPTIONS[$i]}" | base64 -w 0)
-  echo "${ALL_DATES[$i]}|${ALL_SLUGS[$i]}|$t_b64|$d_b64" >> "$TMPFILE"
+  b_b64=$(echo -n "${ALL_BODIES[$i]}" | base64 -w 0)
+  echo "${ALL_DATES[$i]}|${ALL_SLUGS[$i]}|$t_b64|$d_b64|$b_b64" >> "$TMPFILE"
 done
 
 SORTED=$(sort -r -t'|' -k1 "$TMPFILE")
@@ -216,16 +222,19 @@ rm -f "$TMPFILE"
 
 {
   echo "const POSTS = ["
-  while IFS='|' read -r pdate pslug t_b64 d_b64; do
+  while IFS='|' read -r pdate pslug t_b64 d_b64 b_b64; do
     [[ -z "$pdate" ]] && continue
     ptitle=$(echo -n "$t_b64" | base64 -d)
     pdesc=$(echo -n "$d_b64" | base64 -d)
+    pbody=$(echo -n "$b_b64" | base64 -d)
+    pbody_escaped=$(echo -n "$pbody" | sed 's/\\/\\\\/g; s/`/\\`/g; s/\${/\\${/g')
     echo "  {"
     echo "    slug: \"${pslug}\","
     echo "    file: \"posts/${pslug}.md\","
     echo "    date: \"${pdate}\","
     echo "    title: \"${ptitle//\"/\\\"}\","
     echo "    description: \"${pdesc//\"/\\\"}\","
+    echo "    body: \`${pbody_escaped}\`,"
     echo "  },"
   done <<< "$SORTED"
   echo "];"

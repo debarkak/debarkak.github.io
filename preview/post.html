@@ -88,12 +88,11 @@
       }
 
       try {
-        var response = await fetch(post.file);
-        if (!response.ok) throw new Error('failed to fetch');
-        var text = await response.text();
-        var meta = parseFrontmatter(text);
-
-        document.title = (meta.title || slug) + ' · debarka';
+        // we use post.title, post.date, and post.body directly from posts.js
+        // this avoids ANY fetch requests, allowing it to work completely offline
+        // on any browser via file:// or strictly configured servers.
+        
+        document.title = (post.title || slug) + ' · debarka';
 
         marked.use({
           renderer: {
@@ -111,13 +110,13 @@
         });
 
         contentEl.innerHTML =
-          '<h1>' + (meta.title || slug) + '</h1>' +
-          '<p class="post-date">' + formatDate(meta.date || post.date) + '</p>' +
-          marked.parse(meta.body);
+          '<h1>' + (post.title || slug) + '</h1>' +
+          '<p class="post-date">' + formatDate(post.date) + '</p>' +
+          marked.parse(post.body || '');
 
         hljs.highlightAll();
       } catch (e) {
-        contentEl.innerHTML = '<p class="info-msg">could not load post. try using firefox or a local server.</p>';
+        contentEl.innerHTML = '<p class="info-msg">error rendering post.</p>';
       }
     }
 
